@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="EFMF.js"></script>
+    <link rel="stylesheet" href="EFMF.css">
+    <script src="main-script.js"></script>
+    <link rel="stylesheet" href="main-style.css">
+    <link rel="icon" href="favicon.png">
+    <title>EFMF - Main</title>
+</head>
+
+<body>
+    <div id="header">
+        <div>
+            <a onclick="EFMF.replURL(location.origin)">
+                <!-- ICON BY https://www.flaticon.com/premium-icon/window_69084 -->
+                <img src="favicon-white.png" width="50" class="pointer" alt="네트워크 연결이 원활하지 않습니다.">
+            </a>
+        </div>
+        <div>
+            <a>
+                <h2>EFMF</h2>
+            </a>
+        </div>
+        <!--
+            <div class="hidden">
+                <a href="/login/">
+                    <button class="btn btn-primary login">로그인</button>
+                </a>
+                <a href="/signin/">
+                    <button class="btn btn-outline-primary signin">회원가입</button>
+                </a>
+            </div>
+        -->
+    </div>
+    <div id="body">
+        Easy Fast and Many Functions = EFMF
+        <button type="button" class="btn" onclick="EFMF.replURL('./download/')">USE LIBRARY</button>
+        <p>
+            <button type="button" class="btn" onclick="EFMF.replURL('./learn/')">LEARN LIBRARY</button>
+        </p>
+    </div>
+</body>
+
+</html>

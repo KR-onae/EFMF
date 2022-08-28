@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../EFMF.js"></script>
+    <link rel="stylesheet" href="../EFMF.css">
+    <script src="../main-script.js"></script>
+    <link rel="stylesheet" href="../main-style.css">
+    <link rel="icon" href="../favicon.png">
+    <title>EFMF - Main</title>
+</head>
+
+<body>
+    <div id="header">
+        <div>
+            <a onclick="EFMF.replURL(location.origin)">
+                <!-- ICON BY https://www.flaticon.com/premium-icon/window_69084 -->
+                <img src="../favicon-white.png" width="50" class="pointer" alt="네트워크 연결이 원활하지 않습니다.">
+            </a>
+        </div>
+        <div>
+            <a>
+                <h2>EFMF</h2>
+            </a>
+        </div>
+        <!--
+            <div class="hidden">
+                <a href="/login/">
+                    <button class="btn btn-primary login">로그인</button>
+                </a>
+                <a href="/signin/">
+                    <button class="btn btn-outline-primary signin">회원가입</button>
+                </a>
+            </div>
+        -->
+    </div>
+    <div id="body">
+        Loading...
+    </div>
+</body>
+<script>
+    EFMF("#body").html(`
+        <h1>EFMF v1.0</h1>
+
+        <h2>EFMF(<code class="mini-title ncode" open="false" onclick="miniTitle(this, '!Selectors: ( array | string )')">...</code>)</h2>
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- This command is used to get the elements selected with selectors from the document.\nl
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- Selectors are the same as selectors used in document.querySelector.\nl
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;(Reference: <a onclick="EFMF.link(this)">https://www.w3schools.com/jsref/met_document_queryselector.asp</a>)\nl
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- Then it will answer with a Dict called Selectors.\nl
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;You can modify many things using the values you answered.\nl
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;To learn about this, go to <a onclick="EFMF.link(this)">https://efmf.netlify.app/learn/edit-element</a>.
+        
+        <h2>new EFMF(<code class="mini-title ncode" open="false" onclick="miniTitle(this, '!TagName: ( string ), id: ( string )')">...</code>)</h2>
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- This command is used to create temporary elements.\nl
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- You can edit this temporary element.\nl
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- Note that this will disappear after 100 milliseconds.
+        
+        <h2>EFMF.ajax(<code class="mini-title ncode" open="false" onclick="miniTitle(this, '!options | url: ( dict ) | ( string ), callback: ( function )')">...</code>)</h2>
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- This command is used to get information from a website.\nl
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- You can put url and success in options.\nl
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;Success is the function to run after completion.\nl
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- Example: <code class="sourcecode ncode display-block" style="margin-left: 15px;">\nlEFMF.ajax({\nl&ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;"url": "https://reqres.in/api/users?page=2",\nl&ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;"success": function(response) {\nl&ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;console.log(response.response)\nl&ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;}\nl})</code>
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- You can also abbreviate this: <code class="sourcecode ncode display-block" style="margin-left: 15px;">EFMF.ajax("https://reqres.in/api/users?page=2", function(response) {\nl&ThickSpace;&ThickSpace;&ThickSpace;console.log(response.response)\nl})</code>
+        
+        <h2>EFMF.can(<code class="mini-title ncode" open="false" onclick="miniTitle(this, '!function: ( function ), msg: ( boolean )')">...</code>)</h2>
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- This command is to check if the code can work.\nl
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- If msg is not set or false, check if this code can be executed without error. Returns true if possible, false otherwise.\nl
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- If msg is true, when an error occurs, the reason for the error is returned. Returns true if there are no errors.
+        
+        <h2>EFMF.copy(<code class="mini-title ncode" open="false" onclick="miniTitle(this, '!text: ( string )')">...</code>)</h2>
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- This command is used to copy text.\nl
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- FYI, it does not work in Node.js.
+
+        <h2>EFMF.float(<code class="mini-title ncode" open="false" onclick="miniTitle(this, '!number: ( int | float ), !length: ( int )')">...</code>)</h2>
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- This command is to modify the length of the decimal.\nl
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- Example:\nl
+        <code class="sourcecode ncode display-block" style="margin-left: 15px;">EFMF.float(1.13579, 3) = 1.135</code>
+
+        <h2>EFMF.isEmpty(<code class="mini-title ncode" open="false" onclick="miniTitle(this, 'any: ( any )')">...</code>)</h2>
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- This command is used to check if data is empty.\nl
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- Example: <code class="sourcecode ncode sm-height" style="margin-left: 15px;">EFMF.isEmpty(0) = true</code>\nl
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- Example: <code class="sourcecode ncode sm-height" style="margin-left: 15px;">EFMF.isEmpty([]) = true</code>\nl
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- Example: <code class="sourcecode ncode sm-height" style="margin-left: 15px;">EFMF.isEmpty([1234]) = false</code>\nl
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- Example: <code class="sourcecode ncode sm-height" style="margin-left: 15px;">EFMF.isEmpty("") = true</code>\nl
+        
+        <h2>EFMF.isJSON(<code class="mini-title ncode" open="false" onclick="!miniTitle(this, '!any: ( any )')">...</code>)</h2>
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- This command is used to check if the value is JSON.\nl
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- Example: <code class="sourcecode ncode sm-height" style="margin-left: 15px;">EFMF.isJSON({}) = true</code>\nl
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- Example: <code class="sourcecode ncode sm-height" style="margin-left: 15px;">EFMF.isJSON("{}") = true</code>\nl
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- Example: <code class="sourcecode ncode sm-height" style="margin-left: 15px;">EFMF.isJSON("{'test':'1234'}") = true</code>\nl
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- Example: <code class="sourcecode ncode sm-height" style="margin-left: 15px;">EFMF.isJSON(1234) = false</code>
+        
+        <h2>EFMF.isMobile()</h2>
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- This command is used to check whether the current device is mobile.
+
+        <h2>EFMF.len(<code class="mini-title ncode" open="false" onclick="miniTitle(this, '!data: ( array | string | int )')">...</code>)</h2>\nl
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- This command is used to check the length of a value.\nl
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- Example: EFMF.len(9623) = 4\nl
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- Example: EFMF.len("HELLO world") = 11
+        
+        <h2>EFMF.link(<code class="mini-title ncode" open="false" onclick="miniTitle(this, '!element | url: ( element ) | ( string )')">...</code>)</h2>
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- This command works like EFMF.replURL().
+
+        <h2>EFMF.noSpace(<code class="mini-title ncode" open="false" onclick="miniTitle(this, 'text: ( string )')">...</code>)</h2>
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- This command is used to delete spaces and line breaks from text.
+
+        <h2>EFMF.NSlength(<code class="mini-title ncode" open="false" onclick="miniTitle(this, 'text: ( string )')">...</code>)</h2>
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- Check the length with no spaces
+
+        <h2>EFMF.replURL(<code class="mini-title ncode" open="false" onclick="miniTitle(this, '!element | url: ( element ) | ( string )')">...</code>)</h2>
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- This command is used to navigate to another website.\nl
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- Example: <code class="sourcecode ncode sm-height" style="margin-left: 15px;">EFMF.replURL("https://efmf.netlify.app/")</code>\nl
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- Also, if the following code is used in the onclick event, it moves to the text in the element.\nl
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;<code class="sourcecode ncode display-block" style="margin-left: 15px;">&#60;a onclick="EFMF.replURL(this)"&#62;TEXT&#60;/a&#62;</code>
+        
+        <h2>EFMF.replaceAll(<code class="mini-title ncode" open="false" onclick="miniTitle(this, '!text: ( string ), !it: ( string ), !to: ( string )')">...</code>)</h2>
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- This command is used to change all It in Text to To.
+
+        <h2>EFMF.split(<code class="mini-title ncode" open="false" onclick="miniTitle(this, '!data: ( string | array | dict ), !at: ( string )')">...</code>)</h2>
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- This command is used to divide text based on At.
+
+        <h2>EFMF.time(<code class="mini-title ncode" open="false" onclick="miniTitle(this, '!ms: ( int | float ), !function: ( function )')">...</code>)</h2>
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- This command is short for setTimeout().
+
+        <h2>EFMF.toDict(<code class="mini-title ncode" open="false" onclick="miniTitle(this, '!data: ( array )')">...</code>)</h2>
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- This command is used to convert Array to Dict.
+
+        <h2>EFMF.toString(<code class="mini-title ncode" open="false" onclick="miniTitle(this, '!data: ( any ), radix: ( int(2 ~ 36) )')">...</code>)</h2>
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- This command is used to change a value to a String
+
+        <h2>EFMF.type(<code class="mini-title ncode" open="false" onclick="miniTitle(this, 'any: ( any )')">...</code>)</h2>
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- Check the type of Any
+
+        <h2>new EFMF.type(<code class="mini-title ncode" open="false" onclick="miniTitle(this, '!name: ( string ), !type: ( string[object|array|string] ), !toString: ( string ), !defPrototype: ( string_VarName | dict ), !var: ( boolean ) , !func: ( function )')">...</code>)(<code class="mini-title ncode" open="false" onclick="miniTitle(this, 'additionalPrototype: ( dict )')">...</code>)</h2>
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- Create a type.
+
+        <h1>EFMF v1.1</h1>
+
+        <h2>EFMF.data.reduction(<code class="mini-title ncode" open="false" onclick="miniTitle(this, '!data: ( int | float ), !size: ( int ), binary: ( int(2 ~ 36) )')">...</code>)</h2>
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- This command is used to change the base of a number and to store it in reduced form.\nl
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- In the returned value, if the first value is 1, it is negative, if it is 0, it is positive.\nl
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- The 2nd and 3rd values represent decimal numbers.\nl
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- Also, size is stored in 4 to 34 and values in 35 to 65.\nl
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- You can convert this value back to decimal using EFMF.data.enlargement().
+
+        <h2>EFMF.data.reduction(<code class="mini-title ncode" open="false" onclick="miniTitle(this, '!data: ( int | float ), binary: ( int(2 ~ 36) )')">...</code>)</h2>
+        &ThickSpace;&ThickSpace;&ThickSpace;&ThickSpace;- This command is used to enlarge the data that has been reduced using EFMF.data.reduction().
+        `, true)
+</script>
+</html>
