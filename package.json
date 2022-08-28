@@ -1,0 +1,27 @@
+{
+    "name: "EFMF",
+    "version": "1.0.0-alpha",
+    "description": "Easy fast and many functions in JS & Node.JS", 
+    "keywords": [
+        "frontend",
+        "backend",
+        "node",
+        "ajax"
+    ],
+    "homepage": "https://efmf.netlify.app",
+    "license": "Apache-2.0",
+    "auther": {
+        "name": "KRonae",
+        "email": "mcnamekorean@gmail.com",
+        "url": "https://efmf.netlify.app"
+    },
+    "main": "EFMF.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/KR-onae/EFMF.git"
+    },
+    "engines": {
+        "node": ">=0.10.3 <0.12",
+        "npm" : "~1.0.20",
+    }
+}
