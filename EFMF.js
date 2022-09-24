@@ -636,8 +636,8 @@ EFMF.getType = function(value) {
     }
 }
 /** Make a type. */
-EFMF.makeType = function() {
-    return new Function("prototypes", `if(EFMF.types.list.indexOf("${toString == undefined ? "[EFMF newTYPE]" : toString}") == -1) {
+EFMF.makeType = function(any, type, toString, defProto, variable, func) {
+    return new Function("prototypes", "EFMFTYPES", `if(EFMFTYPES.list.indexOf("${toString == undefined ? "[EFMF newTYPE]" : toString}") == -1) {
         ${variable == true ? "var " : ""}${any} = ${func == undefined ? `function() {}` : func.toString()}
         ${any}.prototype = ${defProto == undefined ? "{}" : `${EFMF.type(defProto) == "string" ? "new " + defProto.substr(0, 1).toUpperCase() + defProto.substr(1).toLowerCase() :
                              EFMF.type(defProto) == "object" ? JSON.stringify(defProto) : defProto.toString() }`}
@@ -651,8 +651,8 @@ EFMF.makeType = function() {
                 ${any}.prototype[Object.keys(prototypes)[i]] = Object.values(prototypes)[i];
             }
         }
-        EFMF.types.list.push("${toString == undefined ? "[EFMF newTYPE]" : toString}");
-        EFMF.types.data.push({
+        EFMFTYPES.list.push("${toString == undefined ? "[EFMF newTYPE]" : toString}");
+        EFMFTYPES.data.push({
             "name": "${toString == undefined ? "[EFMF newTYPE]" : toString}",
             "type": "${type == undefined ? "newType" : type}"
         });
@@ -662,10 +662,14 @@ EFMF.makeType = function() {
 }
 /** Get or make a type. */
 EFMF.type = function(any, type, toString, defProto, variable, func) {
-    if(EFMF.can(() => typeof(this) == "function" || this == window) ? typeof(this) == "function" || this == window : this.type != undefined) {
+    if(isNodeJS) {
         return EFMF.getType(any);
     } else {
-        return EFMF.makeType(any, type, toString, defProto, variable, func);
+        if(EFMF.can(() => typeof(this) == "function" || this == window) ? typeof(this) == "function" || this == window : this.type != undefined) {
+            return EFMF.getType(any);
+        } else {
+            return EFMF.makeType(any, type, toString, defProto, variable, func);
+        }
     }
 }
 /** Check device. It dosn't work in Node.js. */
@@ -982,128 +986,151 @@ if(isNodeJS == false) {
                         EFMF.docreadys[i]();
                     }
                 }
-                // Others
-                if(EFMF.settings.econsole) {
-                    new EFMF.type("EFMF_consoleLogs", "array", "[EFMF console-logs list]", "Array", false, function() {})();
-                    console.console = {}
-                    console.console.clear = console.clear;
-                    console.console.log = console.log;
-                    console.console.warn = console.warn;
-                    console.console.error = console.error;
-                    console.console.info = console.info;
-                    console.logs = new EFMF_consoleLogs();
-                    console.reload =  function() {
-                        console.console.clear();
-                        for(var i = 0; i < console.logs.length; i++) {
-                            if(typeof(console.logs[i]) == "object") {
-                                if(console.logs[i].display) {
-                                    if(["log","info","warn","error"].indexOf(console.logs[i].type) != -1) {
-                                        if(typeof(console.logs[i].text) ==  "string") {
-                                            new Function("i",`console.console.${console.logs[i].type}(console.logs[i].text.color())`)(i);
-                                        } else {
-                                            new Function("i",`console.console.${console.logs[i].type}(console.logs[i].text)`)(i);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    console.LF = (type, t) => {
-                        return new Function("type","t",`return {
-                            "text": t,
-                            "type": type,
-                            "display": true,
-                            "val": (t) => {
-                                if(typeof(console.logs[${console.logs.length}]) == "object") {
-                                    console.logs[${console.logs.length}].text = t
-                                    console.reload();
-                                    return true
-                                } else {
-                                    throw Error("EFMF_Econsole: This text has been &ndeleted&r&c!");
-                                    return false
-                                }
-                            },
-                            "show": function() {
-                                if(typeof(console.logs[${console.logs.length}]) == "object") {
-                                    console.logs[${console.logs.length}].display = true
-                                    console.reload();
-                                    return true
-                                } else {
-                                    throw Error("EFMF_Econsole: This text has been &ndeleted&r&c!");
-                                    return false
-                                }
-                            },
-                            "hide": function() {
-                                if(typeof(console.logs[${console.logs.length}]) == "object") {
-                                    console.logs[${console.logs.length}].display = false
-                                    console.reload();
-                                    return true
-                                } else {
-                                    throw Error("EFMF_Econsole: This text has been &ndeleted&r&c!");
-                                    return false
-                                }
-                            },
-                            "delete": function() {
-                                if(typeof(console.logs[${console.logs.length}]) == "object") {
-                                    console.logs[${console.logs.length}] = undefined
-                                    console.reload();
-                                    return true
-                                } else {
-                                    throw Error("EFMF_Econsole: This text has already been &ndeleted&r&c!");
-                                    return false
-                                }
-                            }
-                        }`)(type, t);
-                    }
-                    console.log = (t) => {
-                        if(t == undefined) {
-                            var t = ""
-                        }
-                        var o = console.LF("log", t);
-                        console.logs.push(o);
-                        console.console.log(EFMF.type(t) == "string" ? t.color() : t);
-                        return o
-                    },
-                    console.info = (t) => {
-                        if(t == undefined) {
-                            var t = ""
-                        }
-                        var o = console.LF("info", t);
-                        console.logs.push(o);
-                        console.console.log(EFMF.type(t) == "string" ? t.color() : t);
-                        return o
-                    },
-                    console.warn = (t) => {
-                        if(t == undefined) {
-                            var t = ""
-                        }
-                        var o = console.LF("warn", t);
-                        console.logs.push(o);
-                        console.console.log(EFMF.type(t) == "string" ? t.color() : t);
-                        return o
-                    },
-                    console.error = (t) => {
-                        if(t == undefined) {
-                            var t = ""
-                        }
-                        var o = console.LF("error", t);
-                        console.logs.push(o);
-                        console.console.error(EFMF.type(t) == "string" ? t.color() : t);
-                        return o
-                    }
-                    console.clear = function() {
-                        console.logs = new EFMF_consoleLogs();
-                        console.reload();
-                    }
-                    console.reload();
-                }
                 if(EFMF("html").html()[0].toLowerCase().indexOf(`<link rel="stylesheet" href="https://efmf.netlify.app/EFMF.css">`) == -1 && EFMF.settings.css == true) {
                     EFMF("head").append(`<link rel="stylesheet" href="https://efmf.netlify.app/EFMF.css">`);
                 }
-            }, 10);
+            }, 5);
         }
     });
 }
+
+setTimeout(() => {
+    if(EFMF.settings.econsole) {
+        EFMF.makeType("EFMF_consoleLogs", "array", "[EFMF console-logs list]", "Array", false, function() {})({}, EFMF.types);
+        console.console = {}
+        console.console.clear = console.clear;
+        console.console.log = console.log;
+        console.console.warn = console.warn;
+        console.console.error = console.error;
+        console.console.info = console.info;
+        console.logs = new EFMF_consoleLogs();
+        if(isNodeJS) {
+            process.stdout.RWrite = process.stdout.write;
+        }
+        console.reload =  function() {
+            console.console.clear();
+            for(var i = 0; i < console.logs.length; i++) {
+                if(typeof(console.logs[i]) == "object") {
+                    if(console.logs[i][0].display) {
+                        if(["log","info","warn","error"].indexOf(console.logs[i][0].type) != -1) {
+                            if(typeof(console.logs[i][0].text) ==  "string") {
+                                if(console.logs[i].length == 1) {
+                                    new Function("i",`process.stdout.RWrite(console.logs[i][0].text.color())`)(i);
+                                } else {
+                                    new Function("i",`console.console.${console.logs[i][0].type}(console.logs[i][0].text.color())`)(i);
+                                }
+                            } else {
+                                if(console.logs[i].length == 1) {
+                                    new Function("i",`process.stdout.RWrite(console.logs[i][0].text)`)(i);
+                                } else {
+                                    new Function("i",`console.console.${console.logs[i][0].type}(console.logs[i][0].text)`)(i);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        console.LF = (type, t) => {
+            return new Function("type","t",`return {
+                "text": t,
+                "type": type,
+                "display": true,
+                "val": (t) => {
+                    if(typeof(console.logs[${console.logs.length}]) == "object") {
+                        console.logs[${console.logs.length}].text = t
+                        console.reload();
+                        return true
+                    } else {
+                        throw Error("EFMF_Econsole: This text has been &ndeleted&r&c!");
+                        return false
+                    }
+                },
+                "show": function() {
+                    if(typeof(console.logs[${console.logs.length}]) == "object") {
+                        console.logs[${console.logs.length}].display = true
+                        console.reload();
+                        return true
+                    } else {
+                        throw Error("EFMF_Econsole: This text has been &ndeleted&r&c!");
+                        return false
+                    }
+                },
+                "hide": function() {
+                    if(typeof(console.logs[${console.logs.length}]) == "object") {
+                        console.logs[${console.logs.length}].display = false
+                        console.reload();
+                        return true
+                    } else {
+                        throw Error("EFMF_Econsole: This text has been &ndeleted&r&c!");
+                        return false
+                    }
+                },
+                "delete": function() {
+                    if(typeof(console.logs[${console.logs.length}]) == "object") {
+                        console.logs[${console.logs.length}] = undefined
+                        console.reload();
+                        return true
+                    } else {
+                        throw Error("EFMF_Econsole: This text has already been &ndeleted&r&c!");
+                        return false
+                    }
+                }
+            }`)(type, t);
+        }
+        console.log = (t) => {
+            if(t == undefined) {
+                var t = ""
+            }
+            var o = console.LF("log", t);
+            console.logs.push([o, "\n"]);
+            console.console.log(EFMF.type(t) == "string" ? t.color() : t);
+            return o
+        },
+        console.info = (t) => {
+            if(t == undefined) {
+                var t = ""
+            }
+            var o = console.LF("info", t);
+            console.logs.push([o, "\n"]);
+            console.console.log(EFMF.type(t) == "string" ? t.color() : t);
+            return o
+        },
+        console.warn = (t) => {
+            if(t == undefined) {
+                var t = ""
+            }
+            var o = console.LF("warn", t);
+            console.logs.push([o, "\n"]);
+            console.console.log(EFMF.type(t) == "string" ? t.color() : t);
+            return o
+        },
+        console.error = (t) => {
+            if(t == undefined) {
+                var t = ""
+            }
+            var o = console.LF("error", t);
+            console.logs.push([o, "\n"]);
+            console.console.error(EFMF.type(t) == "string" ? t.color() : t);
+            return o
+        }
+        if(isNodeJS) {
+            process.stdout.write = (t) => {
+                if(t == undefined) {
+                    var t = ""
+                }
+                var o = console.LF("log", t);
+                console.logs.push([o]);
+                process.stdout.RWrite(EFMF.type(t) == "string" ? t.color() : t);
+                return o
+            }
+        }
+        console.clear = function() {
+            console.logs = new EFMF_consoleLogs();
+            console.reload();
+        }
+    }
+}, 5);
 
 // SHORTER SUB FUNCTIONS
 for(var i = 0; i < Object.keys(EFMF).length; i++) {
