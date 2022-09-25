@@ -461,7 +461,8 @@ EFMF.settings = {
         "defEndtime": 100
     },
     "css": true,
-    "econsole": false
+    "econsole": false,
+	"econsoleMaxOutputs": 100
 }
 EFMF.types = {
     "list": [],
@@ -1006,7 +1007,7 @@ setTimeout(() => {
         }
         console.reload =  function() {
             console.console.clear();
-            for(var i = 0; i < console.logs.length; i++) {
+            for(var i = (console.logs.length > econsoleMaxOutputs ? console.logs - econsoleMaxOutputs : 0); i < console.logs.length; i++) {
                 if(typeof(console.logs[i]) == "object") {
                     if(console.logs[i][0].display) {
                         if(["log","info","warn","error"].indexOf(console.logs[i][0].type) != -1) {
