@@ -636,25 +636,22 @@ EFMF.getType = function(value) {
     }
 }
 /** Make a type. */
-EFMF.makeType = function(any, type, toString, defProto, variable, func) {
-    return new Function("prototypes", "EFMFTYPES", `if(EFMFTYPES.list.indexOf("${toString == undefined ? "[EFMF newTYPE]" : toString}") == -1) {
-        ${variable == true ? "var " : ""}${any} = ${func == undefined ? `function() {}` : func.toString()}
-        ${any}.prototype = ${defProto == undefined ? "{}" : `${EFMF.type(defProto) == "string" ? "new " + defProto.substr(0, 1).toUpperCase() + defProto.substr(1).toLowerCase() :
-                             EFMF.type(defProto) == "object" ? JSON.stringify(defProto) : defProto.toString() }`}
-        ${toString == undefined ? `${any}.prototype.toString = function() {
-            return "[EFMF newTYPE]";
-        }` : `${any}.prototype.toString = function() {
-            return "${toString}";
-        }`}
+EFMF.makeType = function(name, toString, defProto, global, func) {
+    return new Function("EFMFTYPES", "prototypes", `if(EFMFTYPES.list.indexOf("${toString == undefined ? "[EFMF newTYPE]" : toString}") == -1) {
+        ${!global ? "var " : ""}${name} = ${func == undefined ? `function() {}` : func.toString()};
+        ${name}.prototype = ${defProto == undefined ? "Object" : defProto}.prototype;
+        ${name}.prototype.toString = function() {
+            return "${toString == undefined ? "[EFMF newTYPE]" : toString}";
+        }
         if(prototypes != undefined) {
             for(var i = 0; i < Object.keys(prototypes).length; i++) {
-                ${any}.prototype[Object.keys(prototypes)[i]] = Object.values(prototypes)[i];
+                ${name}.prototype[Object.keys(prototypes)[i]] = Object.values(prototypes)[i];
             }
         }
         EFMFTYPES.list.push("${toString == undefined ? "[EFMF newTYPE]" : toString}");
         EFMFTYPES.data.push({
             "name": "${toString == undefined ? "[EFMF newTYPE]" : toString}",
-            "type": "${type == undefined ? "newType" : type}"
+            "type": "${name == undefined ? "newType" : name}"
         });
     } else {
         throw Error("new EFMF.type: This tostring name is already set.");
@@ -816,7 +813,7 @@ EFMF.data.enlargement = function(x, binary) {
 
 // New type
 if(isNodeJS == false) {
-    new EFMF.type("Selectors", "array", "[EFMF selectorsList]", "Array", false, function(selectorsORcount) {
+    EFMF.makeType("Selectors", "[EFMF selectorsList]", "Array", true, function(selectorsORcount) {
         if(EFMF.type(selectorsORcount) == "string") {
             var count = document.querySelectorAll(selectorsORcount).length
         }
@@ -833,12 +830,12 @@ if(isNodeJS == false) {
             }
             return out
         }
-    })();
-    new EFMF.type("Selector", "object", "[EFMF selector]", "Object", false, function(selectors) {
+    })(EFMF.types);
+    EFMF.makeType("Selector", "[EFMF selector]", "Object", true, function(selectors) {
         if(selectors != undefined) {
             return EFMF(selectors);
         }
-    })();
+    })(EFMF.types);
 }
 
 // PROTOTYPE
@@ -996,7 +993,7 @@ if(isNodeJS == false) {
 
 setTimeout(() => {
     if(EFMF.settings.econsole) {
-        EFMF.makeType("EFMF_consoleLogs", "array", "[EFMF console-logs list]", "Array", false, function() {})({}, EFMF.types);
+        EFMF.makeType("EFMF_consoleLogs", "[EFMF console-logs list]", "Array", true, function() {})(EFMF.types);
         console.console = {}
         console.console.clear = console.clear;
         console.console.log = console.log;
@@ -1015,13 +1012,13 @@ setTimeout(() => {
                         if(["log","info","warn","error"].indexOf(console.logs[i][0].type) != -1) {
                             if(typeof(console.logs[i][0].text) ==  "string") {
                                 if(console.logs[i].length == 1) {
-                                    new Function("i",`process.stdout.RWrite(console.logs[i][0].text.color())`)(i);
+                                    new Function("i",`process.stdout.RWrite(JSON.stringify(console.logs[i][0].text).color())`)(i);
                                 } else {
                                     new Function("i",`console.console.${console.logs[i][0].type}(console.logs[i][0].text.color())`)(i);
                                 }
                             } else {
                                 if(console.logs[i].length == 1) {
-                                    new Function("i",`process.stdout.RWrite(console.logs[i][0].text)`)(i);
+                                    new Function("i",`process.stdout.RWrite(JSON.stringify(console.logs[i][0].text))`)(i);
                                 } else {
                                     new Function("i",`console.console.${console.logs[i][0].type}(console.logs[i][0].text)`)(i);
                                 }
@@ -1119,9 +1116,9 @@ setTimeout(() => {
                 if(t == undefined) {
                     var t = ""
                 }
-                var o = console.LF("log", t);
+                var o = console.LF("stdout", t);
                 console.logs.push([o]);
-                process.stdout.RWrite(EFMF.type(t) == "string" ? t.color() : t);
+                process.stdout.RWrite(EFMF.type(t) == "string" ? t.color() : JSON.stringify(t));
                 return o
             }
         }
